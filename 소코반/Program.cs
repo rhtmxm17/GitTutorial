@@ -1,4 +1,6 @@
-﻿namespace ConsoleProject1
+﻿using System.Diagnostics;
+
+namespace ConsoleProject1
 {
     internal class Program
     {
@@ -74,6 +76,7 @@
         }
 
         static GameData data;
+        static Stopwatch stopwatch;
 
         static void Main(string[] args)
         {
@@ -100,6 +103,7 @@
                 gameRunning = true,
                 stageRunning = false
             };
+            stopwatch = new Stopwatch();
         }
 
         static void StageSelect()
@@ -156,17 +160,25 @@
 
         static void Input()
         {
-            int blink = 0;
+            bool blinkToggle = false;
 
-            // 100ms마다 입력을 확인하는 코드 (링크: 참고한 자료)
-            // https://learn.microsoft.com/ko-kr/dotnet/api/system.console.keyavailable?view=net-8.0
-            while (Console.KeyAvailable == false)
+            while (true)
             {
-                Thread.Sleep(100);
+                // 타이머 (재)시작
+                stopwatch.Restart();
 
-                // 입력 대기중 루프에 4번 들어올 때 마다 색 변경
-                blink++;
-                if ((blink / 4) % 2 == 0)
+                // 타이머 대기
+                while (stopwatch.ElapsedMilliseconds < 500)
+                {
+                    // 키 입력시 대기 중단
+                    if (Console.KeyAvailable != false)
+                        break;
+                }
+                if (Console.KeyAvailable != false)
+                    break;
+
+                blinkToggle = !blinkToggle;
+                if(blinkToggle)
                 {
                     PrintPlayer(ConsoleColor.Cyan);
                 }
@@ -175,7 +187,6 @@
                     PrintPlayer(ConsoleColor.DarkCyan);
                 }
             }
-
             data.inputKey = Console.ReadKey(true).Key;
         }
 

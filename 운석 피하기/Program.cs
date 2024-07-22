@@ -1,4 +1,6 @@
-﻿namespace ConsoleProject2
+﻿using System.Diagnostics;
+
+namespace ConsoleProject2
 {
     internal class Program
     {
@@ -50,12 +52,17 @@
         static void Main(string[] args)
         {
             Start();
+            Stopwatch stopwatch = new Stopwatch();
+
             while (data.running)
             {
-                Thread.Sleep(100);
+                stopwatch.Restart();
+
                 Input();
                 Update();
                 Render();
+
+                while (stopwatch.ElapsedMilliseconds < 100) ;
             }
             End();
         }
